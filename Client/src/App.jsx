@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
-import "./app.css";
+import "./App.css";
 //Navbar page
 import NavbarMain from "./components/Navbar/NavbarMain";
 // Basic Pages
