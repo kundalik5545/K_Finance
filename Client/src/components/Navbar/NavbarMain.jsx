@@ -52,8 +52,8 @@ function NavbarMain() {
               </>
             ) : (
               <>
-                <span>
-                  <MenuIcon className="block sm:hidden" />
+                <span className="block  md:hidden">
+                  <MenuIcon />
                 </span>
                 <div className="menu-login-btn space-x-3 hidden lg:block">
                   <Link to="sign-up">
