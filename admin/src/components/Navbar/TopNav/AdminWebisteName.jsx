@@ -1,14 +1,14 @@
-import React from "react";
 import { IndianRupee } from "lucide-react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 const websiteName = import.meta.env.VITE_WEBSITE_NAME;
 
-function WebsiteName() {
+function AdminWebisteName() {
   return (
     <div>
       <NavLink
         to="/"
-        className="flex items-center space-x-1 rtl:space-x-reverse"
+        className="website-logo flex items-center space-x-2 rtl:space-x-reverse"
       >
         <IndianRupee size={40} />
         <span className="self-center font-inter text-3xl font-semibold whitespace-nowrap dark:text-white">
@@ -19,4 +19,4 @@ function WebsiteName() {
   );
 }
 
-export default WebsiteName;
+export default AdminWebisteName;

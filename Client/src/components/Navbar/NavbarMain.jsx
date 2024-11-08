@@ -35,45 +35,42 @@ function NavbarMain() {
   }, [isLoggedIn]);
 
   return (
-    <div>
-      <nav className="bg-white border-gray-200 dark:bg-gray-900">
-        <div className="website-log max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <WebsiteName />
-          <Navlinks />
-          {/* user login control navbar */}
-          <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            {isLoggedIn ? (
-              <>
-                <UserProfileAvatar
-                  userImg={data?.userImg}
-                  userName={data?.userName}
-                  userEmail={data?.userEmail}
-                />
-              </>
-            ) : (
-              <>
-                <span className="block  md:hidden">
-                  <MenuIcon />
-                </span>
-                <div className="menu-login-btn space-x-3 hidden lg:block">
-                  <Link to="sign-up">
-                    <Button>
-                      <UserPlus /> Sign Up
-                    </Button>
-                  </Link>
-                  <Link to="login">
-                    <Button>
-                      <LogIn />
-                      Login
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
+    <>
+      <nav className="user-navbar flex flex-wrap items-center justify-between mx-auto p-4 bg-white border-gray-200 dark:bg-gray-900 website-log max-w-screen-xl ">
+        <WebsiteName />
+        <Navlinks />
+        <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          {isLoggedIn ? (
+            <>
+              <UserProfileAvatar
+                userImg={data?.userImg}
+                userName={data?.userName}
+                userEmail={data?.userEmail}
+              />
+            </>
+          ) : (
+            <>
+              <span className="block  md:hidden">
+                <MenuIcon />
+              </span>
+              <div className="menu-login-btn space-x-3 hidden lg:block">
+                <Link to="sign-up">
+                  <Button>
+                    <UserPlus /> Sign Up
+                  </Button>
+                </Link>
+                <Link to="login">
+                  <Button>
+                    <LogIn />
+                    Login
+                  </Button>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </nav>
-    </div>
+    </>
   );
 }
 

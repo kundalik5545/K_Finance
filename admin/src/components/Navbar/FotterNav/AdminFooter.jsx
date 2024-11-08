@@ -1,9 +1,8 @@
-import { FaceIcon } from "@radix-ui/react-icons";
 import { Instagram, Github, Facebook, Youtube, Twitter } from "lucide-react";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
-function Footer() {
+function AdminFooter() {
   //This is to move user from footer links to top of that page
   useEffect(() => {
     const handleLinkCLick = () => {
@@ -34,7 +33,7 @@ function Footer() {
             <ul className="text-gray-500 dark:text-gray-400 font-medium ">
               <li className="mb-4">
                 <NavLink
-                  to="/about"
+                  to="/admin-about"
                   className={({ isActive }) =>
                     isActive
                       ? "hover:underline hover:text-white bg-blue-400 text-white p-2 px-3 rounded-sm "
@@ -290,4 +289,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default AdminFooter;
