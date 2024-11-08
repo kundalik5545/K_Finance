@@ -151,3 +151,39 @@ export default App;
 ```
 npm run dev
 ```
+
+## Now setup App.jsx for routing
+
+```
+npm i react-router-dom
+```
+
+## Add this to App.jsx
+
+```
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState, useEffect, createContext } from "react";
+import "./App.css";
+
+import { Button } from "@/components/ui/button"
+//Navbar page
+import NavbarMain from "./components/Navbar/NavbarMain";
+// Basic Pages
+import HomePage from "./pages/HomePage";
+
+function App() {
+return (
+<>
+  <Router>
+    <NavbarMain />
+    <Routes>
+        <Route path="/" element={<HomePage />} />
+    </Routes>
+  </Router>
+</>
+);
+}
+
+export default App;
+
+```
