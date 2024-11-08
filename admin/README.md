@@ -187,3 +187,11 @@ return (
 export default App;
 
 ```
+
+## Now add these packages as required
+
+```
+npm i dotenv react-hot-toast axios
+```
+
+## More ....
