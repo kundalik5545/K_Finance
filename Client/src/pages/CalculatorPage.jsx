@@ -41,6 +41,30 @@ function CalculatorPage() {
       to: "/login",
       symbol: <IndianRupee size={30} />,
     },
+    {
+      id: 7,
+      name: "Fixed Deposite Calculator",
+      to: "/login",
+      symbol: <IndianRupee size={30} />,
+    },
+    {
+      id: 8,
+      name: "Fixed Deposite Calculator",
+      to: "/login",
+      symbol: <IndianRupee size={30} />,
+    },
+    {
+      id: 9,
+      name: "Fixed Deposite Calculator",
+      to: "/login",
+      symbol: <IndianRupee size={30} />,
+    },
+    {
+      id: 10,
+      name: "Fixed Deposite Calculator",
+      to: "/login",
+      symbol: <IndianRupee size={30} />,
+    },
   ];
 
   return (
