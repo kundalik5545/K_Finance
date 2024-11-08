@@ -6,10 +6,10 @@ import { LogIn, Send, UserPlus, X } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import toast from "react-hot-toast";
-import { logInContext } from "../../App";
+import { LogInContext } from "../../App";
 
 function Login() {
-  const { userLoggInStatus } = useContext(logInContext);
+  const { setUserLoggInStatus } = useContext(LogInContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -40,11 +40,12 @@ function Login() {
           email: "",
           password: "",
         });
-        userLoggInStatus(true);
+
+        setUserLoggInStatus(true);
         navigate("/dashboard", { replace: true });
         toast.success(response.data.message);
       } else {
-        userLoggInStatus(false);
+        setUserLoggInStatus(false);
         toast.error("Please contact admin!");
       }
     } catch (error) {

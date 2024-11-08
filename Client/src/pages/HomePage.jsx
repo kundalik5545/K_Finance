@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { IndianRupee, Wallet, MenuIcon, UserPlus, LogIn } from "lucide-react";
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { logInContext } from "../App";
+import { LogInContext } from "../App";
 
 const websiteName = import.meta.env.VITE_WEBSITE_NAME;
 
 function HomePage() {
-  const { isLoggedIn } = useContext(logInContext);
+  const { isLoggedIn } = useContext(LogInContext);
 
   useEffect(() => {}, [isLoggedIn]);
 

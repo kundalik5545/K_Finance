@@ -3,11 +3,11 @@ import React, { useState, useContext } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "../ui/button";
-import { logInContext } from "@/App";
+import { LogInContext } from "@/App";
 import axios from "axios";
 
 function MenuIcon() {
-  const { userLoggInStatus, isLoggedIn } = useContext(logInContext);
+  const { isLoggedIn, onLogoutUser } = useContext(LogInContext);
   const [closeMenus, setCloseMenus] = useState(false);
   const handleOpenMenuIcon = () => {
     setCloseMenus(!closeMenus);
@@ -15,14 +15,6 @@ function MenuIcon() {
 
   const handleCloseMenu = () => {
     setCloseMenus(false);
-  };
-
-  const handleLogOut = async () => {
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/user/logout"
-    );
-
-    userLoggInStatus(false);
   };
 
   return (
@@ -110,7 +102,7 @@ function MenuIcon() {
           ) : (
             <>
               <div className="logout-btn pt-5 flex items-center justify-start w-full ">
-                <Button onClick={(handleLogOut, handleCloseMenu)}>
+                <Button onClick={(onLogoutUser, handleCloseMenu)}>
                   <LogOut /> <span>Log Out</span>
                 </Button>
               </div>

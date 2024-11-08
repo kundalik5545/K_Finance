@@ -1,4 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { useState, useEffect, createContext } from "react";
 import "./App.css";
 //Navbar page
@@ -21,65 +28,137 @@ import TermsAndConditions from "./components/Legal/TermsAndConditions";
 import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
 //Footer page
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 //Newly create context here...
-export const logInContext = createContext();
+export const LogInContext = createContext();
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
-  const userLoggInStatus = (item) => {
-    setIsLoggedIn(item);
+  const setUserLoggInStatus = (status) => {
+    setIsLoggedIn(status);
   };
 
-  useEffect(() => {
-    // const userToken = localStorage.getItem("token");
-  }, [isLoggedIn]);
+  // const handleLoginUser = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/api/v1/user/login",
+  //       formData
+  //     );
+  //     //If user is logged In Successfully then
+  //     if (response.data.success) {
+  //       setFormData({
+  //         email: "",
+  //         password: "",
+  //       });
+  //       setUserLoggInStatus(true);
+  //       // navigate("/");
+  //       navigate("/dashboard", { replace: true });
+  //       toast.success(response.data.message);
+  //     } else {
+  //       setUserLoggInStatus(false);
+  //       toast.error("Please contact admin!");
+  //     }
+  //   } catch (error) {
+  //     if (error.message == "Network Error") {
+  //       toast.error("Internal Server is Down. Please Try After Some Time.");
+  //     }
+
+  //     // if (error.response.status === 400) {
+  //     //   toast.error(`${error.response.data.message}`);
+  //     // } else if (error.response.status === 401) {
+  //     //   toast.error(`${error.response.data.message}`);
+  //     // } else if (error.response.status === 404) {
+  //     //   toast.error(`${error.response.data.message}`);
+  //     // } else if (error.response.status === 500) {
+  //     //   toast.error(`${error.response.data.message}`);
+  //     // } else {
+  //     //   toast.error("error");
+  //     // }
+
+  //     console.log("error in catch for login user", error);
+  //   }
+  // };
+
+  // const handleLoginUser = (e) => {
+  //   setUserLoggInStatus(true);
+  //   navigate("/");
+  // };
+  const handleLogoutUser = async () => {
+    const response = await axios.post(
+      "http://localhost:8000/api/v1/user/logout"
+    );
+
+    console.log(response.data);
+    setUserLoggInStatus(false);
+    navigate("/login");
+  };
+
+  useEffect(() => {}, [isLoggedIn]);
 
   return (
     <div id="roots">
-      <Router>
-        <main>
-          <logInContext.Provider
-            value={{
-              userLoggInStatus: userLoggInStatus,
-              isLoggedIn,
-            }}
-          >
-            <NavbarMain />
-            <Routes>
-              {/* Main pages that need user to login */}
-              <Route path="/" element={<HomePage />} />
-
-              {/* Auth */}
-              <Route path="/sign-up" element={<SignUp />} />
-              <Route path="/login" element={<Login />} />
-              {/* Only show when user is logged in */}
-              {isLoggedIn ? (
-                <>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/credit-card" element={<CreditCardPage />} />
-                </>
-              ) : (
-                <></>
-              )}
-            </Routes>
-          </logInContext.Provider>
-
+      <main>
+        <LogInContext.Provider
+          value={{
+            setUserLoggInStatus: setUserLoggInStatus,
+            isLoggedIn,
+            // onLoginUser: handleLoginUser,
+            onLogoutUser: handleLogoutUser,
+          }}
+        >
+          <NavbarMain />
           <Routes>
-            {/* These are pages that do not need user to login */}
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/Calculators" element={<Calculators />} />
-            <Route path="/services" element={<Services />} />
-            {/* Legal Page Routes */}
-            <Route path="/terms-conditions" element={<TermsAndConditions />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            {/* Main pages that need user to login */}
+            <Route path="/" element={<HomePage />} />
+            {/* Auth */}
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            {/* Only show when user is logged in */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/credit-card"
+              element={
+                <ProtectedRoute>
+                  <CreditCardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/services"
+              element={
+                <ProtectedRoute>
+                  <Services />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
-        </main>
-        <Toaster position="top-right" />
-        <Footer />
-      </Router>
+        </LogInContext.Provider>
+
+        <Routes>
+          {/* These are pages that do not need user to login */}
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/Calculators" element={<Calculators />} />
+
+          {/* Legal Page Routes */}
+          <Route path="/terms-conditions" element={<TermsAndConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        </Routes>
+      </main>
+      <Toaster position="top-right" />
+      <Footer />
     </div>
   );
 }

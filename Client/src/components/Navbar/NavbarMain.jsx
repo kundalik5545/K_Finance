@@ -7,10 +7,10 @@ import MenuIcon from "./MenuIcon";
 import { Button } from "../ui/button";
 import { LogIn, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { logInContext } from "../../App";
+import { LogInContext } from "@/App";
 
 function NavbarMain() {
-  const { isLoggedIn } = useContext(logInContext);
+  const { isLoggedIn } = useContext(LogInContext);
   const [data, setData] = useState([]);
 
   const getUserDetails = async () => {

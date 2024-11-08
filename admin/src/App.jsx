@@ -15,7 +15,7 @@ import About from "./Pages/About";
 import AdminDashboard from "./components/Dashboard/AdminDashboard";
 import AdminServices from "./Pages/AdminServices";
 import AdminLogin from "./components/Auth/AdminLogin";
-import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import AdminProtectedRoute from "./components/Auth/AdminProtectedRoute";
 
 // Newly created context here
 export const LogInContext = createContext();
@@ -36,12 +36,6 @@ function App() {
     setUserLoggInStatus(false);
     navigate("/admin-login");
   };
-  // const handleLogoutUser = () => {
-  //   setUserLoggInStatus(false);
-  //   navigate("/");
-  // };
-
-  console.log("isLoggedIn:-", isLoggedIn);
 
   useEffect(() => {}, [isLoggedIn]);
 
@@ -66,17 +60,17 @@ function App() {
             <Route
               path="/admin-dashboard"
               element={
-                <ProtectedRoute>
+                <AdminProtectedRoute>
                   <AdminDashboard />
-                </ProtectedRoute>
+                </AdminProtectedRoute>
               }
             />
             <Route
               path="/admin-services"
               element={
-                <ProtectedRoute>
+                <AdminProtectedRoute>
                   <AdminServices />
-                </ProtectedRoute>
+                </AdminProtectedRoute>
               }
             />
           </Routes>

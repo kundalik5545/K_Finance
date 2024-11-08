@@ -15,19 +15,19 @@ import {
 } from "@/components/ui/popover";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
-import { logInContext } from "@/App";
+import { LogInContext } from "@/App";
 import axios from "axios";
 
 function UserProfileAvatar({ userImg, userName, userEmail }) {
-  const { userLoggInStatus } = useContext(logInContext);
+  const { onLogoutUser } = useContext(LogInContext);
 
-  const handleLogOut = async () => {
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/user/logout"
-    );
+  // const handleLogOut = async () => {
+  //   const response = await axios.post(
+  //     "http://localhost:8000/api/v1/user/logout"
+  //   );
 
-    userLoggInStatus(false);
-  };
+  //   setUserLoggInStatus(false);
+  // };
 
   return (
     <div className="flex justify-center items-center p-2 m-2">
@@ -91,14 +91,18 @@ function UserProfileAvatar({ userImg, userName, userEmail }) {
                 </Link>
               </li>
               <li>
-                <Link className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-700 hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                <Link
+                  to="/"
+                  onClick={onLogoutUser}
+                  className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-700 hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
                   <LogOut />
                   <span>Sign out</span>
                 </Link>
               </li>
-              <li>
-                <Button onClick={handleLogOut}>Log Out</Button>
-              </li>
+              {/* <li>
+                <Button onClick={onLogoutUser}>Log Out</Button>
+              </li> */}
             </ul>
           </div>
         </PopoverContent>
