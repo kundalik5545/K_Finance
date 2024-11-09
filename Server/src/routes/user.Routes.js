@@ -6,7 +6,9 @@ import {
   logOutUser,
   updatePassword,
   getUserDetails,
+  refreshAccessToken,
 } from "../controllers/Auth/loginUser.controller.js";
+import { dashboard } from "../controllers/Dashboard.Controllers.js";
 
 const router = Router();
 
@@ -18,5 +20,8 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logOutUser);
 router.route("/updatePassword").post(verifyJWT, updatePassword);
 router.route("/userDetails").get(verifyJWT, getUserDetails);
+router.route("/dashboard").get(verifyJWT, dashboard);
+
+router.route("/refresh-token").get(refreshAccessToken);
 
 export default router;

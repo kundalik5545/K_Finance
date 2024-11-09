@@ -8,7 +8,7 @@ function CalculatorPage() {
     {
       id: 1,
       name: "Fixed Deposite Calculator",
-      to: "/about",
+      to: "/fix-fd",
       symbol: <Calculator size={30} />,
     },
     {

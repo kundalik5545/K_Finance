@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { useState, useEffect, createContext } from "react";
 import "./App.css";
 //Navbar page
-import NavbarMain from "./components/Navbar/NavbarMain";
+import NavbarMain from "./components/Navbar/TopNav/NavbarMain";
 // Basic Pages
 import HomePage from "./pages/HomePage";
 import About from "./pages/About";
@@ -27,8 +27,9 @@ import { Toaster } from "react-hot-toast";
 import TermsAndConditions from "./components/Legal/TermsAndConditions";
 import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
 //Footer page
-import Footer from "./components/Footer";
+import Footer from "./components/Navbar/Footer/Footer";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import FixFd_Calc from "./components/calculators/FixFd_Calc";
 
 //Newly create context here...
 export const LogInContext = createContext();
@@ -150,8 +151,9 @@ function App() {
           {/* These are pages that do not need user to login */}
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          {/* All calculator routs */}
           <Route path="/Calculators" element={<Calculators />} />
-
+          <Route path="/fix-fd" element={<FixFd_Calc />} />
           {/* Legal Page Routes */}
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

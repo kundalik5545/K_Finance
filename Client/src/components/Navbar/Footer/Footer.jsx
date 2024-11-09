@@ -2,6 +2,7 @@ import { FaceIcon } from "@radix-ui/react-icons";
 import { Instagram, Github, Facebook, Youtube, Twitter } from "lucide-react";
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import ShareUs from "./ShareUs";
 
 function Footer() {
   //This is to move user from footer links to top of that page
@@ -248,42 +249,7 @@ function Footer() {
             </a>
             . All Rights Reserved.
           </span>
-          <div className="flex items-center justify-center mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
-            <a
-              href="#"
-              className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              <Facebook />
-              <span className="sr-only">Facebook page</span>
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              <Twitter />
-              <span className="sr-only">Discord community</span>
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              <Youtube />
-              <span className="sr-only">Twitter page</span>
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              <Github />
-              <span className="sr-only">GitHub account</span>
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >
-              <Instagram />
-            </a>
-          </div>
+          <ShareUs />
         </div>
       </div>
     </footer>

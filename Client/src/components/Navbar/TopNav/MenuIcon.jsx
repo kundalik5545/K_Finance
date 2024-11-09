@@ -2,7 +2,7 @@ import { LogOut, Menu, X, UserPlus, LogIn } from "lucide-react";
 import React, { useState, useContext } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { LogInContext } from "@/App";
 import axios from "axios";
 

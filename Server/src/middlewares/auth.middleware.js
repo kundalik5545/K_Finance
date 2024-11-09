@@ -4,10 +4,19 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/Auth/UserLoginData.models.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
+  // Log statements for debugging
+  console.log("this is before try catch block");
+  console.log("accessToken value from cookies:", req.cookies?.accessToken);
+  console.log(
+    "Authorization accessToken value from header:",
+    req.header("Authorization")?.replace("Bearer ", "")
+  );
+
   try {
+    // Retrieve token from Authorization header or cookies
     const token =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
+      req.header("Authorization")?.replace("Bearer ", "") ||
+      req.cookies?.accessToken;
 
     if (!token) {
       return res
@@ -30,6 +39,8 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error("Error in verifyJWT middleware:", error);
+
     return res
       .status(401)
       .json(

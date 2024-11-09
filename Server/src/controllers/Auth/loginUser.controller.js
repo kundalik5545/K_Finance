@@ -235,12 +235,13 @@ const updatePassword = asyncHandler(async (req, res) => {
 
 //To get current users details
 const getUserDetails = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-  const userFullName = req.user.fullName;
-  const userEmail = req.user.email;
-  const userPhone = req.user.phone;
+  console.log("testing user details controller");
 
-  const userBasicDetails = { userId, userFullName, userEmail, userPhone };
+  const userBasicDetails = await User.findById(req.user._id).select(
+    -password - refreshToken
+  );
+
+  console.log("userBasicDetails", userBasicDetails);
 
   return res
     .status(200)
