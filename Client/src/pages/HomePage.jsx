@@ -39,7 +39,7 @@ function HomePage() {
       <div className="homepage-login-signup">
         {isLoggedIn ? (
           <>
-            <p>Welcome JK</p>
+            <p>Welcome JKs</p>
           </>
         ) : (
           <>
