@@ -1,443 +1,207 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Slider } from "../ui/slider";
-import RightSideJoinUs from "../commonComponents/RightSideJoinUs"; 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import {  ChartContainer } from "@/components/ui/chart"
+import RightSideJoinUs from "../commonComponents/RightSideJoinUs";
 import {
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-} from "@/components/ui/chart";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function FixFd_Calc() {
-  const [investmentValue, setInvestmentValue] = useState(100000);
-
-  const [SimpleReturn, setSimpleReturn] = useState("");
-  const [CompoundReturn, setCompoundReturn] = useState("");
-
-  const [
-    SimpleReturnAdjustedToInflation,
-    setSimpleReturnAdjustedToInflation,
-  ] = useState("");
-  const [
-    CompoundReturnAdjustedToInflation,
-    setCompoundReturnAdjustedToInflation,
-  ] = useState("");
-
-  const [
-      SimpleReturnAdjustedToInflationAndTax,
-      setSimpleReturnAdjustedToInflationAndTax,
-    ] = useState("");
-  const [
-    CompoundReturnAdjustedToInflationAndTax,
-    setCompoundReturnAdjustedToInflationAndTax,
-  ] = useState("");
-
-   const [
-     TotalSimpleReturnAdjustedToInflationOnly,
-     setTotalSimpleReturnAdjustedToInflationOnly,
-   ] = useState("");
-    const [
-      TotalCompoundReturnAdjustedToInflationOnly,
-      setTotalCompoundReturnAdjustedToInflationOnly,
-    ] = useState("");
-
-   
-const [
-  TotalSimpleReturnAdjustedToInflationAndTax,
-  setTotalSimpleReturnAdjustedToInflationAndTax,
-] = useState("");
-  
-    const [
-      TotalCompoundReturnAdjustedToInflationAndTax,
-      setTotalCompoundReturnAdjustedToInflationAndTax,
-    ] = useState("");
-
-    
-  
-
+  const [principal, setPrincipal] = useState(100000);
   const [formData, setFormData] = useState({
-    rateOfInterest: "",
-    timePeriod: "",
-    inflationRate: "",
-    taxBracket: "",
+    rateOfInterest: 7,
+    timePeriod: 1,
+    inflationRate: 0,
+    taxBracket: 0,
+    interestCummOn: 1, // default to yearly if not selected
   });
 
-  // Format the number as Indian Rupee
+  const [results, setResults] = useState({
+    SimpleReturn: "",
+    CompoundReturn: "",
+    SimpleReturnAdjustedToInflation: "",
+    CompoundReturnAdjustedToInflation: "",
+    SimpleReturnAdjustedToInflationAndTax: "",
+    CompoundReturnAdjustedToInflationAndTax: "",
+    totalSimpleReturn: "",
+    totalCompoundReturn: "",
+    totalSimpleReturnAdjustedToInflationOnly: "",
+    totalCompoundReturnAdjustedToInflationOnly: "",
+    totalSimpleReturnAdjustedToInflationAndTax: "",
+    totalCompoundReturnAdjustedToInflationAndTax: "",
+  });
+
   const formatToIndianRupee = (value) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-      maximumFractionDigits: 0, // Remove decimal places
+      maximumFractionDigits: 0,
     }).format(value);
   };
-
-  // Handle slider change and update investment value
   const handleSliderChange = (value) => {
-    setInvestmentValue(value[0]);
+    setPrincipal(value[0]);
   };
 
-  // Handle input change, removing any non-numeric characters
   const handleOnInvestmentValChng = (e) => {
     const rawValue = Number(e.target.value.replace(/[^0-9]/g, ""));
-    setInvestmentValue(rawValue);
+    setPrincipal(rawValue);
   };
-
-  //Actual logic to calculate fix fd
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // const fiexDepositeCalFun = () => {
-  //   let fdSimpleReturn = [
-  //     investmentValue +
-  //       (investmentValue * formData.rateOfInterest * formData.timePeriod) /
-  //         100 -
-  //       investmentValue,
-  //   ];
+  const calculateFixedDepositReturns = () => {
+    const {
+      rateOfInterest,
+      timePeriod,
+      inflationRate,
+      taxBracket,
+      interestCummOn,
+    } = formData;
 
-  //   let fdCompoundReturn = Math.round(
-  //     investmentValue *
-  //       Math.pow(1 + formData.rateOfInterest / 100, formData.timePeriod) -
-  //       investmentValue
-  //   );
+    const p = principal;
+    const r = rateOfInterest / 100;
+    const t = timePeriod;
+    const ir = inflationRate / 100;
+    const tb = taxBracket / 100;
+    const f = interestCummOn;
+    const cpx = 7;
 
-  //   let adjustedSimpleReturnOnInflation =
-  //     fdSimpleReturn /
-  //     Math.pow(1 + formData.inflationRate / 100, formData.timePeriod);;
+    const si = p * r * t;
+    const ci = p * Math.pow(1 + r / f, f * t) - p;
+    const si_I = p * Math.pow(1 + ir, t);
+    // const si_I = p / (1 + ir);
+    const ci_I = ci / (1 + ir);
+    const si_I_T = si_I * (1 - tb);
+    const ci_I_T = ci_I * (1 - tb);
+    const T_si = p + si;
+    const T_ci = p + ci;
+    const T_si_I = p + si_I;
+    const T_ci_I = p + ci_I;
+    const T_si_I_T = p + si_I_T;
+    const T_ci_I_T = p + ci_I_T;
 
-  //   let adjustedCompoundOnInflation = Math.round(
-  //     (investmentValue *
-  //       (Math.pow(1 + formData.rateOfInterest / 100, formData.timePeriod) -
-  //         1)) /
-  //       Math.pow(1 + formData.inflationRate / 100, formData.timePeriod)
-  //   );
+    setResults({
+      SimpleReturn: si,
+      CompoundReturn: ci,
+      SimpleReturnAdjustedToInflation: si_I,
+      CompoundReturnAdjustedToInflation: ci_I,
+      SimpleReturnAdjustedToInflationAndTax: si_I_T,
+      CompoundReturnAdjustedToInflationAndTax: ci_I_T,
+      totalSimpleReturn: T_si,
+      totalCompoundReturn: T_ci,
+      totalSimpleReturnAdjustedToInflationOnly: T_si_I,
+      totalCompoundReturnAdjustedToInflationOnly: T_ci_I,
+      totalSimpleReturnAdjustedToInflationAndTax: T_si_I_T,
+      totalCompoundReturnAdjustedToInflationAndTax: T_ci_I_T,
+    });
+  };
 
-  //   let adjustedSimpleReturnOnInflationAndTax =
-  //     (fdSimpleReturn + adjustedSimpleReturnOnInflation)*(formData.taxBracket/100);
-    
-  //   let adjustedCompoundOnInflationAndTax = null;
-
-  //   setSimpleReturn(fdSimpleReturn);
-  //   setCompoundReturn(fdCompoundReturn);
-  //   setSimpleReturnAdjustedToInflation(adjustedSimpleReturnOnInflation);
-  //   setCompoundReturnAdjustedToInflation(adjustedCompoundOnInflation);
-  //   setSimpleReturnAdjustedToInflationAndTax(
-  //     adjustedSimpleReturnOnInflationAndTax
-  //   );
-  //   setCompoundAdjustedToInflationAndTax(adjustedCompoundOnInflationAndTax);
-  // };
-
-  const fiexDepositeCalFun = () => {
-    // Step 1: Calculate nominal simple return (without inflation or tax adjustment)
-    let fdSimpleReturn =
-      (investmentValue * formData.rateOfInterest * formData.timePeriod) / 100;
-
-    // Step 2: Calculate compound return (nominal, without inflation or tax adjustment)
-    let fdCompoundReturn = Math.round(
-      investmentValue *
-        Math.pow(1 + formData.rateOfInterest / 100, formData.timePeriod) -
-        investmentValue
-    );
-
-    // Step 3: Adjust simple return for inflation
-    let adjustedSimpleReturnOnInflation =
-      fdSimpleReturn /
-      Math.pow(1 + formData.inflationRate / 100, formData.timePeriod);
-
-    // Step 4: Adjust compound return for inflation
-    let adjustedCompoundOnInflation = Math.round(
-      (investmentValue *
-        (Math.pow(1 + formData.rateOfInterest / 100, formData.timePeriod) -
-          1)) /
-        Math.pow(1 + formData.inflationRate / 100, formData.timePeriod)
-    );
-
-    // Step 5: Adjust the inflation-adjusted simple return for tax
-    let adjustedSimpleReturnOnInflationAndTax =
-      adjustedSimpleReturnOnInflation * (1 - formData.taxBracket / 100);
-
-    // Step 6: Adjust the inflation-adjusted compound return for tax
-    let adjustedCompoundOnInflationAndTax =
-      adjustedCompoundOnInflation * (1 - formData.taxBracket / 100);
-
-    
-    //Step 7: Total Invested value after inflation only
-    let TotalSimpleReturnAdjustedToInflationOnly = investmentValue + adjustedSimpleReturnOnInflation;
-    
-    //Step 8: Total Invested value after inflation only
-    let TotalCompoundReturnAdjustedToInflationOnly = investmentValue + adjustedCompoundOnInflation;
-    
-    //Step 9: Total Invested value after inflation only
-    let TotalSimpleReturnAdjustedToInflationAndTax =
-      investmentValue + adjustedSimpleReturnOnInflationAndTax;
-
-    //Step 10: Total Invested value after inflation only
-    let TotalCompoundReturnAdjustedToInflationAndTax =
-      investmentValue + adjustedCompoundOnInflationAndTax;
-    
-    
-    // Set state variables with calculated values
-    setSimpleReturn(fdSimpleReturn);
-    setCompoundReturn(fdCompoundReturn);
-
-    setSimpleReturnAdjustedToInflation(adjustedSimpleReturnOnInflation);
-    setCompoundReturnAdjustedToInflation(adjustedCompoundOnInflation);
-
-    setSimpleReturnAdjustedToInflationAndTax( adjustedSimpleReturnOnInflationAndTax);
-    setCompoundReturnAdjustedToInflationAndTax(  adjustedCompoundOnInflationAndTax );
-
-    setTotalSimpleReturnAdjustedToInflationOnly(TotalSimpleReturnAdjustedToInflationOnly);
-    setTotalCompoundReturnAdjustedToInflationOnly(
-      TotalCompoundReturnAdjustedToInflationOnly
-    );
-   
-    setTotalSimpleReturnAdjustedToInflationAndTax(
-      TotalSimpleReturnAdjustedToInflationAndTax
-    );
-    setTotalCompoundReturnAdjustedToInflationAndTax(
-      TotalCompoundReturnAdjustedToInflationAndTax
-    ); 
-  }; 
   const allSimpleResult = [
     {
       id: 1,
       title: "Invested Amount :-",
-      investmentValue: formatToIndianRupee(investmentValue),
+      investmentValue: formatToIndianRupee(principal),
     },
     {
       id: 2,
-      title: "Est. Simple Return :-",
-      investmentValue: formatToIndianRupee(SimpleReturn),
+      title: "Total Return :-",
+      investmentValue: formatToIndianRupee(results.totalSimpleReturn),
     },
     {
       id: 3,
-      title: "Est. Simple Return after Adjusting to Inflation :-",
-      investmentValue: formatToIndianRupee(SimpleReturnAdjustedToInflation),
+      title: "Total Return after Inflation:-",
+      investmentValue: formatToIndianRupee(
+        results.totalSimpleReturnAdjustedToInflationOnly
+      ),
     },
     {
       id: 4,
-      title: "Est. Simple Return after Adjusting to Inflation & Tax :-",
+      title: "Total Return after Inflation And Tax :-",
       investmentValue: formatToIndianRupee(
-        SimpleReturnAdjustedToInflationAndTax
+        results.totalSimpleReturnAdjustedToInflationOnly
       ),
     },
     {
       id: 5,
-      title: "Total Simple Return after Adjusting to Inflation Only :-",
-      investmentValue: formatToIndianRupee(
-        TotalSimpleReturnAdjustedToInflationOnly
-      ),
+      title: "Return :-",
+      investmentValue: formatToIndianRupee(results.SimpleReturn),
     },
     {
       id: 6,
-      title: "Total Simple Return after Adjusting to Inflation And Tax :-",
+      title: "Return after Inflation :-",
       investmentValue: formatToIndianRupee(
-        TotalSimpleReturnAdjustedToInflationAndTax
+        results.SimpleReturnAdjustedToInflation
       ),
     },
-    
+
+    {
+      id: 7,
+      title: "Return after Inflation & Tax :-",
+      investmentValue: formatToIndianRupee(
+        results.SimpleReturnAdjustedToInflationAndTax
+      ),
+    },
   ];
 
   const allCompoundResult = [
     {
-      id: 7,
-      title: "Invested Amount :-",
-      investmentValue: formatToIndianRupee(investmentValue),
-    },
-    {
       id: 8,
-      title: "Est. Compound Return :-",
-      investmentValue: formatToIndianRupee(CompoundReturn),
+      title: "Invested Amount :-",
+      investmentValue: formatToIndianRupee(principal),
     },
-
     {
       id: 9,
-      title: "Est. Compound Return after Adjusting to Inflation :-",
-      investmentValue: formatToIndianRupee(CompoundReturnAdjustedToInflation),
+      title: "Total Return :-",
+      investmentValue: formatToIndianRupee(results.totalCompoundReturn),
     },
-
     {
       id: 10,
-      title: "Est. Compound Return after Adjusting to Inflation & Tax :-",
+      title: "Total Return after Inflation :-",
       investmentValue: formatToIndianRupee(
-        CompoundReturnAdjustedToInflationAndTax
+        results.totalCompoundReturnAdjustedToInflationOnly
       ),
     },
 
     {
       id: 11,
-      title: "Total Compound Return after Adjusting to Inflation Only :-",
+      title: "Total Return after Inflation And Tax :-",
       investmentValue: formatToIndianRupee(
-        TotalCompoundReturnAdjustedToInflationOnly
+        results.totalCompoundReturnAdjustedToInflationAndTax
+      ),
+    },
+    {
+      id: 12,
+      title: "Return :-",
+      investmentValue: formatToIndianRupee(results.CompoundReturn),
+    },
+
+    {
+      id: 13,
+      title: "Return after Inflation :-",
+      investmentValue: formatToIndianRupee(
+        results.CompoundReturnAdjustedToInflation
       ),
     },
 
     {
-      id: 12,
-      title: "Total Compound Return after Adjusting to Inflation And Tax :-",
+      id: 14,
+      title: "Return after Inflation & Tax :-",
       investmentValue: formatToIndianRupee(
-        TotalCompoundReturnAdjustedToInflationAndTax
+        results.CompoundReturnAdjustedToInflationAndTax
       ),
     },
   ];
-
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
-  const chartData1 = {
-    labels: [
-      "Invested Amount",
-      "Est. Simple Return",
-      "Est. Simple Return after Adjusting to Inflation",
-      "Est. Simple Return after Adjusting to Inflation & Tax",
-      "Total Simple Return after Adjusting to Inflation Only",
-      "Total Simple Return after Adjusting to Inflation And Tax",
-    ],
-    datasets: [
-      {
-        label: "Investment Values",
-        data: [
-          formatToIndianRupee(investmentValue),
-          formatToIndianRupee(SimpleReturn),
-          SimpleReturnAdjustedToInflation,
-          SimpleReturnAdjustedToInflationAndTax,
-          TotalSimpleReturnAdjustedToInflationOnly,
-          TotalSimpleReturnAdjustedToInflationAndTax,
-        ],
-        backgroundColor: [
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-        ],
-        borderColor: [
-          "rgba(75, 192, 192, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
-  },
-} //satisfies ChartConfig
-
-  const chartConfig1 = {
-    title: {
-      label: "Desktop",
-      color: "#2563eb",
-    },
-    investmentValue: {
-      label: "Mobile",
-      color: "#60a5fa",
-    },
-  };
-
-  //
-
-  const chartData2 = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-  ];
-
-  const chartConfig2 = {
-    desktop: {
-      label: "Desktop",
-      color: "hsl(var(--chart-1))",
-    },
-  }; 
- 
-  const chartConfig4 = {
-    title: {
-      label: "title",
-      color: "hsl(var(--chart-1))",
-    },
-  }; 
- 
-
-  //last chance
-  const chartConfig6 = {
-    investedAmount: {
-      label: "Invested Amount",
-      color: "#2563eb", // A blue color for Invested Amount
-    },
-    simpleReturn: {
-      label: "Est. Simple Return",
-      color: "#60a5fa", // A lighter blue color for Est. Simple Return
-    },
-    returnAfterInflation: {
-      label: "Est. Simple Return after Adjusting to Inflation",
-      color: "#34d399", // A green color for Return After Inflation
-    },
-    returnAfterTax: {
-      label: "Est. Simple Return after Adjusting to Inflation & Tax",
-      color: "#10b981", // A different green for Return After Tax
-    },
-    totalReturnInflation: {
-      label: "Total Simple Return after Adjusting to Inflation Only",
-      color: "#f59e0b", // A yellow color for Total Return (Inflation Only)
-    },
-    totalReturnInflationAndTax: {
-      label: "Total Simple Return after Adjusting to Inflation And Tax",
-      color: "#f97316", // An orange color for Total Return (Inflation and Tax)
-    },
-  };
-
-  //Last data
-  const chartData6 = {
-    labels: allSimpleResult.map((item) => item.title), // Extract the titles for the labels
-    datasets: [
-      {
-        label: "Investment Summary",
-        data: allSimpleResult.map((item) =>
-          parseFloat(item.investmentValue.replace(/[^\d.-]/g, ""))
-        ), // Extract the numeric value (removing formatting)
-        // backgroundColor: [
-        //   chartConfig.investedAmount.color,
-        //   chartConfig.simpleReturn.color,
-        //   chartConfig.returnAfterInflation.color,
-        //   chartConfig.returnAfterTax.color,
-        //   chartConfig.totalReturnInflation.color,
-        //   chartConfig.totalReturnInflationAndTax.color,
-        // ],
-      },
-    ],
-  };
-
-
   useEffect(() => {
-    fiexDepositeCalFun();
-  }, [formData, investmentValue]);
+    calculateFixedDepositReturns();
+  }, [formData, principal]);
 
   return (
     <div className="  max-w-6xl mx-auto p-3 text-gray-800 bg-white  m-3 mb-6">
@@ -457,7 +221,7 @@ const chartData = [
                 <Input
                   type="text"
                   name="investmentVal"
-                  value={investmentValue.toLocaleString("en-IN")} // Display formatted number without currency symbol
+                  value={principal.toLocaleString("en-IN")} // Display formatted number without currency symbol
                   required
                   onChange={handleOnInvestmentValChng}
                   placeholder="Enter Total Investment"
@@ -468,7 +232,7 @@ const chartData = [
                 max={10000000}
                 step={50000}
                 default={100000}
-                value={[investmentValue]} // Wrap in an array
+                value={[principal]} // Wrap in an array
                 onValueChange={handleSliderChange}
                 className="w-full md:w-1/3 pb-4"
               />
@@ -486,6 +250,7 @@ const chartData = [
                 required
                 min={0}
                 max={20}
+                step={0.1}
                 maxLength={2}
                 className="w-20  p-2 text-right font-inter text-lg  rounded-md border border-gray-300"
               />
@@ -493,7 +258,7 @@ const chartData = [
 
             <div className="flex justify-between items-center w-full sm:grid sm:grid-cols-2 sm:items-center">
               <Label className="text-left font-inter text-lg ">
-                Time Period:
+                Time Period (yrs):
               </Label>
               <Input
                 type="number"
@@ -501,10 +266,34 @@ const chartData = [
                 value={formData.timePeriod}
                 onChange={handleOnChange}
                 required
+                step={1}
                 min={0}
+                max={30}
                 maxLength={2}
                 className="w-20 p-2 text-right font-inter text-lg rounded-md border border-gray-300"
               />
+            </div>
+
+            <div className="flex justify-between items-center w-full sm:grid sm:grid-cols-2 sm:items-center">
+              <Label className="text-left font-inter text-lg ">
+                Interest Cumulate on:
+              </Label>
+              <Select
+                name="interestCummOn"
+                value={formData.interestCummOn}
+                onValueChange={(value) =>
+                  handleOnChange({ target: { name: "interestCummOn", value } })
+                }
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Select Basis:" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="12">Monthly Basis</SelectItem>
+                  <SelectItem value="4">Quaterly Basis</SelectItem>
+                  <SelectItem value="1">Yearly Basis</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex justify-between items-center w-full sm:grid sm:grid-cols-2 sm:items-center sm:justify-stretch">
@@ -517,6 +306,10 @@ const chartData = [
                 value={formData.inflationRate}
                 onChange={handleOnChange}
                 required
+                step={0.1}
+                min={0}
+                max={50}
+                maxLength={2}
                 className="w-20  p-2 text-right font-inter text-lg rounded-md border border-gray-300"
               />
             </div>
@@ -530,6 +323,10 @@ const chartData = [
                 value={formData.taxBracket}
                 onChange={handleOnChange}
                 required
+                step={1}
+                min={0}
+                max={30}
+                maxLength={2}
                 className="w-20  p-2 text-right font-inter text-lg rounded-md border border-gray-300"
               />
             </div>
@@ -538,6 +335,9 @@ const chartData = [
           {/* Result Section */}
           <div className="p-2 mt-4 font-inter rounded-lg shadow-sm bg-pink-100">
             <div className="flex flex-col p-2 space-y-3">
+              <h3 className="text-xl text-center font-semibold">
+                Simple Interest Results
+              </h3>
               {allSimpleResult.map((ele, index) => (
                 <div key={index} className="flex justify-between">
                   <span className="text-left w-60 md:w-full">{ele.title}</span>
@@ -546,8 +346,12 @@ const chartData = [
               ))}
             </div>
           </div>
+
           <div className="p-2 mt-4 font-inter rounded-lg shadow-sm bg-blue-100">
             <div className="flex flex-col p-2 space-y-3">
+              <h3 className="text-xl text-center font-semibold">
+                Compound Interest Results
+              </h3>
               {allCompoundResult.map((ele, index) => (
                 <div key={index} className="flex justify-between">
                   <span className="text-left w-60 md:w-full">{ele.title}</span>
@@ -610,90 +414,7 @@ const chartData = [
           <li>t is the tenure in years For example, if you deposit </li>
         </ul>
       </div>
-
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-        <BarChart accessibilityLayer data={chartData}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="month"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend content={<ChartLegendContent />} />
-          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-          <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-        </BarChart>
-      </ChartContainer>
-
-      <ChartContainer config={chartData1} className="min-h-[200px] w-full">
-        <BarChart accessibilityLayer data={chartData}>
-          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-          <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-        </BarChart>
-      </ChartContainer>
-
-      <ChartContainer config={chartConfig1} className="min-h-[200px] w-full">
-        <BarChart accessibilityLayer data={allSimpleResult}>
-          <Bar dataKey="title" fill="var(--color-desktop)" radius={4} />
-          <Bar
-            dataKey="investmentValue"
-            fill="var(--color-mobile)"
-            radius={4}
-          />
-        </BarChart>
-      </ChartContainer>
-
-      <ChartContainer config={chartConfig4}>
-        <BarChart accessibilityLayer data={allSimpleResult}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="title"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
-          <Bar
-            dataKey="investmentValue"
-            fill="var(--color-desktop)"
-            radius={8}
-          />
-        </BarChart>
-      </ChartContainer>
-
-      <ChartContainer config={chartConfig6} className="min-h-[200px] w-full">
-        <BarChart accessibilityLayer data={chartData6}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="title"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
-          />
-          <ChartTooltip content={<ChartTooltipContent />} />
-          <ChartLegend content={<ChartLegendContent />} />
-          <Bar dataKey="investmentValue" fill="var(--color-title)" radius={4} />
-        </BarChart>
-      </ChartContainer>
     </div>
   );
-
-};
+}
 export default FixFd_Calc;
-
-
-
- 
-
- 
-
- 
- 
