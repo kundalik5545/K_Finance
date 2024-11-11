@@ -30,6 +30,7 @@ import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
 import Footer from "./components/Navbar/Footer/Footer";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import FixFd_Calc from "./components/calculators/FixFd_Calc";
+import KnowledgeSection from "./components/KnowledgeGuide/knowledgeSection";
 
 //Newly create context here...
 export const LogInContext = createContext();
@@ -154,6 +155,7 @@ function App() {
           {/* All calculator routs */}
           <Route path="/Calculators" element={<Calculators />} />
           <Route path="/fix-fd" element={<FixFd_Calc />} />
+          <Route path="/knowledgeGuide" element={<KnowledgeSection />} />
           {/* Legal Page Routes */}
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

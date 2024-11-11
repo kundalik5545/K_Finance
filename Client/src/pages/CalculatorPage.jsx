@@ -13,8 +13,8 @@ function CalculatorPage() {
     },
     {
       id: 2,
-      name: "Fixed Deposite Calculator",
-      to: "/contact-us",
+      name: "knowledge Guide",
+      to: "/knowledgeGuide",
       symbol: <Calculator size={30} />,
     },
     {

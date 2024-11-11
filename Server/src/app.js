@@ -21,8 +21,9 @@ app.use(cookieParser());
 
 //Import all User Routes
 import userLoginRouter from "./routes/user.Routes.js";
-
+import knowledgeRouter from "./routes/Knowledge.Routes.js";
 //Routes defined
 app.use("/api/v1/user", userLoginRouter);
+app.use("/api/v1/knowledge", knowledgeRouter);
 
 export default app;
