@@ -26,4 +26,8 @@ import knowledgeRouter from "./routes/Knowledge.Routes.js";
 app.use("/api/v1/user", userLoginRouter);
 app.use("/api/v1/knowledge", knowledgeRouter);
 
+app.get("/", (req, res) => {
+  res.send("This is home page");
+});
+
 export default app;
