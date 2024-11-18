@@ -17,10 +17,14 @@ router.route("/signUp").post(registerNewUser);
 router.route("/login").post(loginUser);
 
 //secured routes
-router.route("/logout").post(verifyJWT, logOutUser);
-router.route("/updatePassword").post(verifyJWT, updatePassword);
-router.route("/userDetails").get(verifyJWT, getUserDetails);
-router.route("/dashboard").get(verifyJWT, dashboard);
+router.route("/logout").post(logOutUser);
+router.route("/updatePassword").post(updatePassword);
+router.route("/userDetails").post(getUserDetails);
+router.route("/dashboard").get(dashboard);
+// router.route("/userDetails").get(verifyJWT, getUserDetails);
+// router.route("/dashboard").get(verifyJWT, dashboard);
+// router.route("/logout").post(verifyJWT, logOutUser);
+// router.route("/updatePassword").post(verifyJWT, updatePassword);
 
 router.route("/refresh-token").get(refreshAccessToken);
 

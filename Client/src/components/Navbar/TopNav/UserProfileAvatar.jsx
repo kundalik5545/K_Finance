@@ -14,20 +14,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { LogInContext } from "@/App";
-import axios from "axios";
 
 function UserProfileAvatar({ userImg, userName, userEmail }) {
-  const { onLogoutUser } = useContext(LogInContext);
-
-  // const handleLogOut = async () => {
-  //   const response = await axios.post(
-  //     "http://localhost:8000/api/v1/user/logout"
-  //   );
-
-  //   setUserLoggInStatus(false);
-  // };
+  const { logout } = useContext(LogInContext);
 
   return (
     <div className="flex justify-center items-center p-2 m-2">
@@ -65,7 +55,7 @@ function UserProfileAvatar({ userImg, userName, userEmail }) {
             <ul className="space-y-1" aria-labelledby="user-menu-button">
               <li>
                 <Link
-                  to="/"
+                  to="/dashboard"
                   className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-700 hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white transition-colors duration-200 ease-in-out"
                 >
                   <LayoutDashboard />
@@ -83,26 +73,23 @@ function UserProfileAvatar({ userImg, userName, userEmail }) {
               </li>
               <li>
                 <Link
-                  to="/"
+                  to="/services"
                   className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-700 hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
                   <Wallet />
-                  <span>Earnings</span>
+                  <span>Services</span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/"
-                  onClick={onLogoutUser}
+                  onClick={logout}
                   className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-700 hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
                   <LogOut />
                   <span>Sign out</span>
                 </Link>
               </li>
-              {/* <li>
-                <Button onClick={onLogoutUser}>Log Out</Button>
-              </li> */}
             </ul>
           </div>
         </PopoverContent>

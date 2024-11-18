@@ -57,7 +57,6 @@ const registerNewUser = asyncHandler(async (req, res) => {
   );
 
   //If created user fails
-
   if (!createdUser) {
     return res
       .status(500)
@@ -116,9 +115,18 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
-  const options = {
+
+  const options1 = {
     httpOnly: true,
     secure: true,
+  };
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // Set expiration for 30 days
+    sameSite: "lax", // Adjust if needed based on your setup
+    path: "/", // Make sure the path is root
   };
 
   //6. Return access and refresh token to user
@@ -156,6 +164,8 @@ const logOutUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "Lax",
+    path: "/",
   };
 
   return res
@@ -235,17 +245,20 @@ const updatePassword = asyncHandler(async (req, res) => {
 
 //To get current users details
 const getUserDetails = asyncHandler(async (req, res) => {
-  console.log("testing user details controller");
+  try {
+    const _id = req.body;
+    const userBasicDetails = await User.findById(_id).select(
+      "-password -refreshToken"
+    );
 
-  const userBasicDetails = await User.findById(req.user._id).select(
-    -password - refreshToken
-  );
-
-  console.log("userBasicDetails", userBasicDetails);
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, userBasicDetails, "User fetched successfully"));
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, userBasicDetails, "User fetched successfully")
+      );
+  } catch (error) {
+    throw new ApiError(401, error);
+  }
 });
 
 export {

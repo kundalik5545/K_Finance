@@ -7,7 +7,7 @@ import { LogInContext } from "@/App";
 import axios from "axios";
 
 function MenuIcon() {
-  const { isLoggedIn, onLogoutUser } = useContext(LogInContext);
+  const { isLoggedIn, logout } = useContext(LogInContext);
   const [closeMenus, setCloseMenus] = useState(false);
   const handleOpenMenuIcon = () => {
     setCloseMenus(!closeMenus);
@@ -52,17 +52,7 @@ function MenuIcon() {
                 Home
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  `block py-2 px-3 rounded ${isActive ? "bg-blue-700" : ""}`
-                }
-                onClick={handleCloseMenu}
-              >
-                About
-              </NavLink>
-            </li>
+
             <li>
               <NavLink
                 to="/services"
@@ -87,13 +77,24 @@ function MenuIcon() {
             </li>
             <li>
               <NavLink
-                to="/contact"
+                to="/about"
                 className={({ isActive }) =>
                   `block py-2 px-3 rounded ${isActive ? "bg-blue-700" : ""}`
                 }
                 onClick={handleCloseMenu}
               >
-                Contact
+                About
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/blog"
+                className={({ isActive }) =>
+                  `block py-2 px-3 rounded ${isActive ? "bg-blue-700" : ""}`
+                }
+                onClick={handleCloseMenu}
+              >
+                Blog
               </NavLink>
             </li>
           </ul>
@@ -102,7 +103,7 @@ function MenuIcon() {
           ) : (
             <>
               <div className="logout-btn pt-5 flex items-center justify-start w-full ">
-                <Button onClick={(onLogoutUser, handleCloseMenu)}>
+                <Button onClick={(logout, handleCloseMenu)}>
                   <LogOut /> <span>Log Out</span>
                 </Button>
               </div>

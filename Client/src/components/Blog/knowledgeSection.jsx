@@ -3,6 +3,7 @@ import axios from "axios";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import toast from "react-hot-toast";
 
 const KnowledgeSection = () => {
   const [formData, setFormData] = useState({

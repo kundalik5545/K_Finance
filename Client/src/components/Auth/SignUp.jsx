@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { LogIn, Send, X, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
+import axiosInstance from "@/api/AxiosInstance";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -29,12 +29,10 @@ function SignUp() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/signUp",
-        formData
-      );
+      const res = await axiosInstance.post("/user/signUp", formData);
+      console.log("Signup res:-", res);
 
-      if (response.status === 201) {
+      if (res.status === 201) {
         setFormData({
           fullName: "",
           email: "",
@@ -42,17 +40,17 @@ function SignUp() {
           password: "",
           confirmPassword: "",
         });
-        toast.success(`${response.data.message}`);
+        toast.success(`${res.data.message}`);
       } else {
         toast.error("Please contact admin!");
       }
     } catch (error) {
-      if (error.response.status === 400) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 409) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 500) {
-        toast.error(`${error.response.data.message}`);
+      if (error.res.status === 400) {
+        toast.error(`${error.res.data.message}`);
+      } else if (error.res.status === 409) {
+        toast.error(`${error.res.data.message}`);
+      } else if (error.res.status === 500) {
+        toast.error(`${error.res.data.message}`);
       } else {
         toast.error(
           "An error occurred during registration. Please try after some time."

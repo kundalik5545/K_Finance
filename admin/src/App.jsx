@@ -1,62 +1,67 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
 import "./App.css";
-// Navbar page
+
+// Navbar and Footer
 import AdminNavbar from "./components/Navbar/TopNav/AdminNavbar";
+import AdminFooter from "./components/Navbar/FotterNav/AdminFooter";
+
 // Basic Pages
 import AdminHomePage from "./Pages/AdminHomePage";
-import AdminFooter from "./components/Navbar/FotterNav/AdminFooter";
 import About from "./Pages/About";
-import AdminDashboard from "./components/Dashboard/AdminDashboard";
 import AdminServices from "./Pages/AdminServices";
+
+// Auth Components
 import AdminLogin from "./components/Auth/AdminLogin";
 import AdminProtectedRoute from "./components/Auth/AdminProtectedRoute";
 
-// Newly created context here
+// Dashboard
+import AdminDashboard from "./components/Dashboard/AdminDashboard";
+
+// Context for Login State
 export const LogInContext = createContext();
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-  const setUserLoggInStatus = (status) => {
-    setIsLoggedIn(status);
+  // Rehydrate state from session storage on load
+  useEffect(() => {
+    const savedUser = sessionStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+      setIsLoggedIn(true);
+    }
+  }, [isLoggedIn]);
+
+  const login = (userData) => {
+    console.log("userData", userData);
+    setIsLoggedIn(true);
+    setUser(userData);
+    sessionStorage.setItem("user", JSON.stringify(userData));
   };
 
-  const handleLoginUser = () => {
-    setUserLoggInStatus(true);
-    navigate("/");
+  const logout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    sessionStorage.removeItem("user");
   };
-  const handleLogoutUser = () => {
-    setUserLoggInStatus(false);
-    navigate("/admin-login");
-  };
-
-  useEffect(() => {}, [isLoggedIn]);
 
   return (
-    <div id="roots">
-      <main>
-        {/* Login required ROutes */}
-        <LogInContext.Provider
-          value={{
-            setUserLoggInStatus: setUserLoggInStatus,
-            isLoggedIn,
-            onLoginUser: handleLoginUser,
-            onLogoutUser: handleLogoutUser,
-          }}
-        >
+    <LogInContext.Provider value={{ isLoggedIn, login, logout, user }}>
+      <div id="roots">
+        <main>
           <AdminNavbar />
+
+          {/* Public Routes */}
           <Routes>
             <Route path="/" element={<AdminHomePage />} />
-            {/* Login Page Route*/}
+            <Route path="/about" element={<About />} />
             <Route path="/admin-login" element={<AdminLogin />} />
-            {/* Routes that needs login */}
+          </Routes>
+
+          {/* Protected Routes */}
+          <Routes>
             <Route
               path="/admin-dashboard"
               element={
@@ -74,15 +79,11 @@ function App() {
               }
             />
           </Routes>
-        </LogInContext.Provider>
 
-        {/* No login required routes */}
-        <Routes>
-          <Route path="/admin-about" element={<About />} />
-        </Routes>
-        <AdminFooter />
-      </main>
-    </div>
+          <AdminFooter />
+        </main>
+      </div>
+    </LogInContext.Provider>
   );
 }
 

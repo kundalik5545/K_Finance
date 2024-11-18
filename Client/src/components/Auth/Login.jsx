@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { LogIn, Send, UserPlus, X } from "lucide-react";
+import { LogIn, UserPlus, X } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import toast from "react-hot-toast";
 import { LogInContext } from "../../App";
+import axiosInstance from "@/api/AxiosInstance";
 
 function Login() {
-  const { setUserLoggInStatus } = useContext(LogInContext);
-
+  const { login } = useContext(LogInContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,43 +24,34 @@ function Login() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleLoginUser = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
-        formData
-      );
+      const res = await axiosInstance.post("/user/login", formData);
+
       //If user is logged In Successfully then
-      if (response.data.success) {
+      if (res.data.success) {
         setFormData({
           email: "",
           password: "",
         });
+        //Toasting success message
+        toast.success(res.data.data.user.fullName);
 
-        setUserLoggInStatus(true);
+        //Setting user details
+        login(res.data.data.user);
+        //navigate to dashboard
         navigate("/dashboard", { replace: true });
-        toast.success(response.data.message);
       } else {
-        setUserLoggInStatus(false);
         toast.error("Please contact admin!");
       }
     } catch (error) {
-      if (error.message == "Network Error") {
-        toast.error("Internal Server is Down. Please Try After Some Time.");
-      }
-
-      if (error.response.status === 400) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 401) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 404) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 500) {
-        toast.error(`${error.response.data.message}`);
+      console.error("Error in login user", error);
+      if (error.res) {
+        toast.error(error.res.data.message || "An error occurred.");
       } else {
-        toast.error("error");
+        toast.error("Network Error. Please try again later.");
       }
     }
   };
@@ -84,7 +73,7 @@ function Login() {
 
         <hr className="pb-4" />
 
-        <form onSubmit={handleSubmit} className="flex flex-col items-center">
+        <form onSubmit={handleLoginUser} className="flex flex-col items-center">
           <span className="font-inter p-2 text-center">
             👉 If already have an account then
             <span className="text-blue-500"> Login</span> please!! 👈

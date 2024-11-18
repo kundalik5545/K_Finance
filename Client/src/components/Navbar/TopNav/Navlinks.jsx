@@ -19,19 +19,7 @@ function Navlinks() {
             Home
           </NavLink>
         </li>
-        <li>
-          <NavLink
-            to="/about"
-            end
-            className={({ isActive }) =>
-              isActive
-                ? "block py-2 px-3 text-white bg-blue-500 rounded "
-                : "block py-2 px-3 text-black rounded  "
-            }
-          >
-            About
-          </NavLink>
-        </li>
+
         <li>
           <NavLink
             to="/services"
@@ -60,7 +48,7 @@ function Navlinks() {
         </li>
         <li>
           <NavLink
-            to="/contact"
+            to="/about"
             end
             className={({ isActive }) =>
               isActive
@@ -68,7 +56,20 @@ function Navlinks() {
                 : "block py-2 px-3 text-black rounded  "
             }
           >
-            Contact
+            About
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/blog"
+            end
+            className={({ isActive }) =>
+              isActive
+                ? "block py-2 px-3 text-white bg-blue-500 rounded "
+                : "block py-2 px-3 text-black rounded  "
+            }
+          >
+            Blog
           </NavLink>
         </li>
       </ul>

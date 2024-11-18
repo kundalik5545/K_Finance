@@ -6,9 +6,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "*",
+    // origin: process.env.CORS_ORIGIN,
     credentials: true,
     // origin: "http://localhost:5173", // Allow only this origin
+    // origin: "http://localhost:5174", // Allow only this origin
     methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
   })
@@ -29,5 +31,10 @@ app.use("/api/v1/knowledge", knowledgeRouter);
 app.get("/", (req, res) => {
   res.send("This is home page");
 });
+
+//Admin Routes
+import adminAddServicesRouter from "./routes/Admin/Services.Rotes.js";
+//Admin Routes defined
+app.use("/api/v1/admin/services", adminAddServicesRouter);
 
 export default app;

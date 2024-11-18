@@ -1,13 +1,8 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { Routes, Route } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
+import axiosInstance from "./api/AxiosInstance";
 import "./App.css";
+
 //Navbar page
 import NavbarMain from "./components/Navbar/TopNav/NavbarMain";
 // Basic Pages
@@ -22,7 +17,7 @@ import Services from "./pages/ServicesPage";
 import Calculators from "./pages/CalculatorPage";
 import CreditCardPage from "./pages/CreditCardPage";
 //Extra plugin
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 //Legal Pages imports
 import TermsAndConditions from "./components/Legal/TermsAndConditions";
 import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
@@ -30,97 +25,101 @@ import PrivacyPolicy from "./components/Legal/PrivacyPolicy";
 import Footer from "./components/Navbar/Footer/Footer";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import FixFd_Calc from "./components/calculators/FixFd_Calc";
-import KnowledgeSection from "./components/KnowledgeGuide/knowledgeSection";
+import KnowledgeSection from "./components/Blog/knowledgeSection";
+import Blog from "./pages/Blog";
 
 //Newly create context here...
 export const LogInContext = createContext();
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-  const setUserLoggInStatus = (status) => {
-    setIsLoggedIn(status);
+  // Rehydrate state from session storage on load
+  useEffect(() => {
+    const savedUser = sessionStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+      setIsLoggedIn(true);
+    }
+  }, [isLoggedIn]);
+
+  const login = (userData) => {
+    console.log("userData", userData);
+    setIsLoggedIn(true);
+    setUser(userData);
+    sessionStorage.setItem("user", JSON.stringify(userData));
   };
 
-  // const handleLoginUser = async (e) => {
-  //   e.preventDefault();
+  const logout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    sessionStorage.removeItem("user");
+  };
 
+  //-----------------
+  // const [userDBId, setUserDBId] = useState({
+  //   _id: "",
+  //   fullName: "",
+  //   email: "",
+  //   phone: "",
+  // });
+
+  // const navigate = useNavigate();
+
+  // const setUserLoggInStatus = (status) => {
+  //   setIsLoggedIn(status);
+  // };
+  // const setUserPersonalID = (dbUserId) => {
+  //   setUserDBId(dbUserId);
+  // };
+
+  // const handleLogoutUser = async () => {
   //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8000/api/v1/user/login",
-  //       formData
+  //     const response = await axiosInstance.post(
+  //       "/user/logout",
+  //       {},
+  //       { withCredentials: true }
   //     );
-  //     //If user is logged In Successfully then
-  //     if (response.data.success) {
-  //       setFormData({
-  //         email: "",
-  //         password: "",
-  //       });
-  //       setUserLoggInStatus(true);
-  //       // navigate("/");
-  //       navigate("/dashboard", { replace: true });
-  //       toast.success(response.data.message);
-  //     } else {
-  //       setUserLoggInStatus(false);
-  //       toast.error("Please contact admin!");
-  //     }
+
+  //     setUserLoggInStatus(false);
+  //     navigate("/login");
+  //     toast.success("User logged out successfully!");
   //   } catch (error) {
-  //     if (error.message == "Network Error") {
-  //       toast.error("Internal Server is Down. Please Try After Some Time.");
-  //     }
-
-  //     // if (error.response.status === 400) {
-  //     //   toast.error(`${error.response.data.message}`);
-  //     // } else if (error.response.status === 401) {
-  //     //   toast.error(`${error.response.data.message}`);
-  //     // } else if (error.response.status === 404) {
-  //     //   toast.error(`${error.response.data.message}`);
-  //     // } else if (error.response.status === 500) {
-  //     //   toast.error(`${error.response.data.message}`);
-  //     // } else {
-  //     //   toast.error("error");
-  //     // }
-
-  //     console.log("error in catch for login user", error);
+  //     console.error("Error during logout:", error);
+  //     toast.error("Failed to log out. Please try again.");
   //   }
   // };
 
-  // const handleLoginUser = (e) => {
-  //   setUserLoggInStatus(true);
-  //   navigate("/");
-  // };
-  const handleLogoutUser = async () => {
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/user/logout"
-    );
-
-    console.log(response.data);
-    setUserLoggInStatus(false);
-    navigate("/login");
-  };
-
-  useEffect(() => {}, [isLoggedIn]);
+  // useEffect(() => {}, [isLoggedIn]);
 
   return (
     <div id="roots">
       <main>
         <LogInContext.Provider
           value={{
-            setUserLoggInStatus: setUserLoggInStatus,
             isLoggedIn,
-            // onLoginUser: handleLoginUser,
-            onLogoutUser: handleLogoutUser,
+            login,
+            logout,
+            user,
+            // setUserLoggInStatus: setUserLoggInStatus,
+            // setUserPersonalID: setUserPersonalID,
+            // isLoggedIn,
+            // userDBId,
+            // onLogoutUser: handleLogoutUser,
           }}
         >
           <NavbarMain />
+          {/* Public Routes */}
           <Routes>
             {/* Main pages that need user to login */}
             <Route path="/" element={<HomePage />} />
-            {/* Auth */}
             <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-            {/* Only show when user is logged in */}
+            {isLoggedIn ? <></> : <Route path="/login" element={<Login />} />}
+          </Routes>
+
+          {/* Protected Routes */}
+          <Routes>
             <Route
               path="/dashboard"
               element={
@@ -148,6 +147,7 @@ function App() {
           </Routes>
         </LogInContext.Provider>
 
+        {/* Common free public routes */}
         <Routes>
           {/* These are pages that do not need user to login */}
           <Route path="/about" element={<About />} />
@@ -155,7 +155,9 @@ function App() {
           {/* All calculator routs */}
           <Route path="/Calculators" element={<Calculators />} />
           <Route path="/fix-fd" element={<FixFd_Calc />} />
-          <Route path="/knowledgeGuide" element={<KnowledgeSection />} />
+
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/study-resources" element={<KnowledgeSection />} />
           {/* Legal Page Routes */}
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

@@ -7,9 +7,10 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import toast from "react-hot-toast";
 import { LogInContext } from "@/App";
+import axiosInstance from "@/api/AxiosInstance";
 
 function AdminLogin() {
-  const { userLoggInStatus } = useContext(LogInContext);
+  const { login, user, isLoggedIn } = useContext(LogInContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -30,21 +31,25 @@ function AdminLogin() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
-        formData
-      );
+      const res = await axiosInstance.post("/user/login", formData);
+
+      console.log("Admin login res:-", res.data);
+      console.log("Admin login res:-", res.data.message);
+      console.log("Admin login res:-", res.data.data.user);
+
       //If user is logged In Successfully then
-      if (response.data.success) {
+      if (res.data.success) {
+        login(res.data.data.user);
+
         setFormData({
           email: "",
           password: "",
         });
-        userLoggInStatus(true);
+
         navigate("/dashboard", { replace: true });
-        toast.success(response.data.message);
+
+        toast.success(res.data.message);
       } else {
-        userLoggInStatus(false);
         toast.error("Please contact admin!");
       }
     } catch (error) {
@@ -52,14 +57,14 @@ function AdminLogin() {
         toast.error("Internal Server is Down. Please Try After Some Time.");
       }
 
-      if (error.response.status === 400) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 401) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 404) {
-        toast.error(`${error.response.data.message}`);
-      } else if (error.response.status === 500) {
-        toast.error(`${error.response.data.message}`);
+      if (error.res.status === 400) {
+        toast.error(`${error.res.data.message}`);
+      } else if (error.res.status === 401) {
+        toast.error(`${error.res.data.message}`);
+      } else if (error.res.status === 404) {
+        toast.error(`${error.res.data.message}`);
+      } else if (error.res.status === 500) {
+        toast.error(`${error.res.data.message}`);
       } else {
         toast.error("error");
       }

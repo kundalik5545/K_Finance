@@ -9,8 +9,6 @@ const websiteName = import.meta.env.VITE_WEBSITE_NAME;
 function HomePage() {
   const { isLoggedIn } = useContext(LogInContext);
 
-  useEffect(() => {}, [isLoggedIn]);
-
   return (
     <div className="HomePage">
       <div className="HomePage-Main p-3 m-1 font-inter font-bold text-center">
